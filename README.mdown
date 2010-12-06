@@ -1,0 +1,72 @@
+Empty State
+===========
+
+Planning for the empty state of every page on a web application is important.
+Adding the empty states to views often makes them messy and hard to read.
+
+Empty State is a plugin for Rails that helps you clean up the code for empty states in your views.
+
+When you iterate over a list, if the list is empty, it renders the empty state partial instead of looping over the empty list.
+Otherwise, it loops over the list as usual.
+
+Setup
+-----
+
+Create empty state partials, such as the follwing examples:
+
+app/views/widgets/_default_empty_state.html.erb
+
+    <div class="empty-row">
+      <strong>Widgetless</strong> (there are none)
+    </div>
+
+app/views/shared/_common_empty_state.html.erb
+
+    <div class="empty-row">
+      <em>no items</em>
+    </div>
+
+Usage
+-----
+
+In your views, iterate over your lists using:
+
+    <% some_array.each(self,                    # used to render the empty state
+                       :empty_state => 'name',  # 'name' specifies the partial that should render.
+                                                # In this case it would render "_name_empty_state.html.erb"
+                                                # You can also pass true, which uses "_default_empty_state.html.erb".
+                       :locals => { :x => :y }  # Optionally, you can also pass in locals to the empty state partial.
+                      ) do |item| %>
+      <%= do something with each item %>        # The code inside the block, as usual, pertains to the non-empty state.
+    <% end %>
+
+Passing both *self* and *{:empty_state => ...}* are required, and is what triggers this plugin.
+If you don't pass the correct arguments, you'll likely get an error such as:
+
+    wrong number of arguments (1 for 0)
+
+
+Examples
+--------
+
+widgets/index.html.erb
+
+    <% @widgets.each(self, :empty_state => true) do |widget|                    # Uses ./_default_empty_state.html.erb %>
+      <div class="result-row">
+        <%= widget.name %>
+      </div>
+    <% end %>
+
+general/index.html.erb
+
+    <% @general_things.each(self, :empty_state => 'shared/common') do |widget|  # Uses shared/_common_empty_state.html.erb %>
+      <div class="result-row">
+        <%= widget.name %>
+      </div>
+    <% end %>
+
+Authors
+-------
+
+* Edward Anderson (nilbus) 
+* Joseph Jaber
